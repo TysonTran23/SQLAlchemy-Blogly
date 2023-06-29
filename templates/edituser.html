@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add a User</title>
+  </head>
+  <body>
+    <h1>Edit User</h1>
+    <form action="/users/{{user.id}}/edit" method="POST">
+      <label for="first">First Name</label>
+      <input
+        type="text"
+        name="first"
+        id="first"
+        placeholder="Enter a first name"
+      />
+      <label for="last">Last Name</label>
+      <input
+        type="text"
+        name="last"
+        id="last"
+        placeholder="Enter a last name"
+      />
+      <label for="image">Image URL</label>
+      <input
+        type="text"
+        name="image"
+        id="image"
+        placeholder="Provide an image of this user"
+      />
+      <button>Save</button>
+    </form>
+    <a href="/users/{{user.id}}">Cancel</a>
+  </body>
+</html>
