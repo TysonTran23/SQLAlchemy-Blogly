@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Details</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>{{user.first_name}} {{user.last_name}}</h1>
-    <img src="{{user.image_url}}" alt="">
-    <a href="/users/{{user.id}}/edit">Edit</a>
+    <img src="{{user.image_url}}" alt="" />
+    <a href="/users/{{user.id}}/edit"><button>Edit</button></a>
     <form action="/users/{{user.id}}/delete" method="POST">
-        <button>Delete</button>
+      <button>Delete</button>
     </form>
-</body>
+    
+    <h2>Posts</h2>
+    <ul>
+        <li><a href="">{{user.first_name}}</a></li>
+    </ul>
+    <a href="/users/{{user.id}}/posts/new"><button>Add Post!</button></a>
+  </body>
 </html>
