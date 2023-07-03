@@ -32,7 +32,7 @@ user5 = User(
     image_url=default_url,
 )
 
-post1 = Post(title="Banana", content="bananas are cool")
+post1 = Post(title="Banana", content="bananas are cool", user_id=1)
 
 db.session.add_all([user1, user2, user3, user4, user5])
 db.session.commit()

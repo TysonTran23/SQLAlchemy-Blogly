@@ -7,7 +7,9 @@
   </head>
   <body>
     <h1>{{user.first_name}} {{user.last_name}}</h1>
-    <img src="{{user.image_url}}" alt="" />
+
+    <img src="{{user.image_url}}" alt=""/>
+    <a href="/"><button>Back Home</button></a>
     <a href="/users/{{user.id}}/edit"><button>Edit</button></a>
     <form action="/users/{{user.id}}/delete" method="POST">
       <button>Delete</button>
@@ -15,7 +17,9 @@
     
     <h2>Posts</h2>
     <ul>
-        <li><a href="">{{user.first_name}}</a></li>
+      {% for post in user.posts%}
+        <li><a href="/posts/{{post.id}}">{{post.title}}</a></li>
+        {% endfor %}
     </ul>
     <a href="/users/{{user.id}}/posts/new"><button>Add Post!</button></a>
   </body>

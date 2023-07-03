@@ -37,7 +37,7 @@ class Post(db.Model):
                            default=datetime.datetime.now)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
 
-    author = db.relationship("User")
+    
 
 
 
