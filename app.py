@@ -145,6 +145,50 @@ def list_tags():
 
     return render_template('tags.html', tags=all_tags)
 
+@app.route("/tags/<int:tag_id>")
+def show_detail_of_tag(tag_id):
+    tag = Tag.query.get_or_404(tag_id)
+
+    return render_template('tag_details.html', tag=tag)
+
+@app.route("/tags/new")
+def new_tag_form():
+    return render_template("newtag.html")
+
+@app.route("/tags/new", methods=["POST"])
+def new_tag():
+    tag_name = request.form['name']
+
+    new_tag = Tag(name=tag_name)
+    db.session.add(new_tag)
+    db.session.commit()
+
+    return redirect("/tags")
+
+@app.route("/tags/<int:tag_id>/edit")
+def edit_tag_form(tag_id):
+    tag = Tag.query.get(tag_id)
+    return render_template('edit_tag.html', tag=tag)
+
+@app.route("/tags/<int:tag_id>/edit", methods=["POST"])
+def edit_tag(tag_id):
+    tag = Tag.query.get(tag_id)
+    tag_name = request.form['name']
+
+    tag.name = tag_name
+
+    db.session.add(tag)
+    db.session.commit()
+
+    return redirect('/tags')
+
+@app.route('/tags/<int:tag_id>/delete', methods=["POST"])
+def delete_tag(tag_id):
+    tag = Tag.query.get(tag_id)
+    db.session.delete(tag)
+    db.session.commit()
+
+
 
 
 

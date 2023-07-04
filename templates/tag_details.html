@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail of Tags</title>
+</head>
+<body>
+    <h1>Show Tag</h1>
+    <h2>{{tag.name}}</h2>
+    <ul>
+        <li><a href="">{{tag.posts}}</a></li>
+    </ul>
+
+    <a href="/tags/{{tag.id}}/edit"><button>Edit</button></a>
+    
+    <form action="/tags/{{tag.id}}/delete" method="post">
+        <button>Delete</button>
+    </form>
+</body>
+</html>
