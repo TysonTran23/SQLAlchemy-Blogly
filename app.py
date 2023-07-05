@@ -2,7 +2,7 @@
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-from models import Post, User, connect_db, db, PostTag, Tag
+from models import Post, PostTag, Tag, User, connect_db, db
 
 app = Flask(__name__)
 
@@ -19,22 +19,26 @@ db.create_all()
 
 @app.route("/")
 def users():
+    """Home page of users"""
     return redirect("/users")
 
 
 @app.route("/users")
 def all_users():
+    """Home Page of users"""
     users = User.query.all()
     return render_template("home.html", users=users)
 
 
 @app.route("/users/new")
 def add_user_page():
+    """Show add new user form"""
     return render_template("newuser.html")
 
 
 @app.route("/users/new", methods=["POST"])
 def add_user():
+    """Add new user from form to the list"""
     first_name = request.form["first"]
     last_name = request.form["last"]
     img = request.form["image"]
@@ -48,18 +52,21 @@ def add_user():
 
 @app.route("/users/<int:user_id>")
 def show_user(user_id):
+    """Show details of the user according to id"""
     user = User.query.get_or_404(user_id)
     return render_template("details.html", user=user)
 
 
 @app.route("/users/<int:user_id>/edit")
 def edit_user(user_id):
+    """Show edit user form"""
     user = User.query.get_or_404(user_id)
     return render_template("edituser.html", user=user)
 
 
 @app.route("/users/<int:user_id>/edit", methods=["POST"])
 def save_user(user_id):
+    """Save changes make from editing of the user"""
     user = User.query.get_or_404(user_id)
 
     first_name = request.form["first"]
@@ -78,6 +85,7 @@ def save_user(user_id):
 
 @app.route("/users/<int:user_id>/delete", methods=["POST"])
 def delete_user(user_id):
+    """Delete user"""
     user = User.query.get_or_404(user_id)
     db.session.delete(user)
     db.session.commit()
@@ -87,6 +95,7 @@ def delete_user(user_id):
 
 @app.route("/users/<int:user_id>/posts/new")
 def post_form(user_id):
+    """Show new post form"""
     users = User.query.get_or_404(user_id)
     tags = Tag.query.all()
 
@@ -95,9 +104,10 @@ def post_form(user_id):
 
 @app.route("/users/<int:user_id>/posts/new", methods=["POST"])
 def add_new_post(user_id):
+    """Create the new post"""
     title = request.form["title"]
     content = request.form["content"]
-    tags = request.form.getlist('tags')
+    tags = request.form.getlist("tags")
 
     post = Post(title=title, content=content, user_id=user_id)
 
@@ -111,25 +121,30 @@ def add_new_post(user_id):
 
     return redirect(f"/users/{user_id}")
 
+
 @app.route("/posts/<int:post_id>")
 def show_post(post_id):
+    """Show details of post"""
     post = Post.query.get_or_404(post_id)
 
     return render_template("post.html", post=post)
 
+
 @app.route("/posts/<int:post_id>/edit")
 def edit_form(post_id):
+    """Show edit form to edit a post"""
     post = Post.query.get_or_404(post_id)
     tags = Tag.query.all()
-    return render_template('edit_post.html', post=post, tags=tags)
+    return render_template("edit_post.html", post=post, tags=tags)
+
 
 @app.route("/posts/<int:post_id>/edit", methods=["POST"])
 def edit_post(post_id):
- 
+    """Update changes of the post from edits"""
     post = Post.query.get_or_404(post_id)
-    title = request.form['title']
-    content = request.form['content']
-    tags = request.form.getlist('tags')
+    title = request.form["title"]
+    content = request.form["content"]
+    tags = request.form.getlist("tags")
 
     post.title = title
     post.content = content
@@ -143,81 +158,88 @@ def edit_post(post_id):
     db.session.add(post)
     db.session.commit()
 
-
     return redirect(f"/posts/{post.id}")
-    
+
+
 @app.route("/posts/<int:post_id>/delete", methods=["POST"])
 def delete_post(post_id):
+    """Delete Post"""
     post = Post.query.get_or_404(post_id)
     db.session.delete(post)
     db.session.commit()
 
     return redirect(f"/users")
 
+
 @app.route("/tags")
 def list_tags():
-    
+    """Show a list of all tags"""
     all_tags = Tag.query.all()
 
-    return render_template('tags.html', tags=all_tags)
+    return render_template("tags.html", tags=all_tags)
+
 
 @app.route("/tags/<int:tag_id>")
 def show_detail_of_tag(tag_id):
+    """Show tag details, show post that have a relationship with the tag"""
     tag = Tag.query.get_or_404(tag_id)
 
-    return render_template('tag_details.html', tag=tag)
+    return render_template("tag_details.html", tag=tag)
+
 
 @app.route("/tags/new")
 def new_tag_form():
+    """Create a new tag form"""
     posts = Post.query.all()
     return render_template("newtag.html", posts=posts)
 
+
 @app.route("/tags/new", methods=["POST"])
 def new_tag():
-    tag_name = request.form['name']
-    post_ids = request.form.getlist('posts')
-
+    """Create the new tag"""
+    tag_name = request.form["name"]
+    post_ids = request.form.getlist("posts")
 
     new_tag = Tag(name=tag_name)
     db.session.add(new_tag)
     db.session.commit()
-
 
     for post_id in post_ids:
         post = Post.query.get(post_id)
         if post:
             new_tag.posts.append(post)
 
-    db.session.commit()    
+    db.session.commit()
 
     return redirect("/tags")
 
+
 @app.route("/tags/<int:tag_id>/edit")
 def edit_tag_form(tag_id):
+    """Show edit tag form"""
     tag = Tag.query.get(tag_id)
-    return render_template('edit_tag.html', tag=tag)
+    return render_template("edit_tag.html", tag=tag)
+
 
 @app.route("/tags/<int:tag_id>/edit", methods=["POST"])
 def edit_tag(tag_id):
+    """Edit existing tag"""
     tag = Tag.query.get(tag_id)
-    tag_name = request.form['name']
+    tag_name = request.form["name"]
 
     tag.name = tag_name
 
     db.session.add(tag)
     db.session.commit()
 
-    return redirect('/tags')
+    return redirect("/tags")
 
-@app.route('/tags/<int:tag_id>/delete', methods=["POST"])
+
+@app.route("/tags/<int:tag_id>/delete", methods=["POST"])
 def delete_tag(tag_id):
+    """Delete Tag"""
     tag = Tag.query.get(tag_id)
     db.session.delete(tag)
     db.session.commit()
 
-    return redirect('/tags')
-
-
-
-
-
+    return redirect("/tags")
