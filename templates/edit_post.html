@@ -12,8 +12,12 @@
       <input type="text" name="title" id="title" />
       <label for="content">Post Content</label>
       <input type="text" name="content" id="content" />
+      {% for tag in tags %}
+      <label for="tags">{{tag.name}}</label>
+      <input type="checkbox" name="tags" value="{{tag.name}}" />
+      {% endfor %}
       <button>Edit</button>
     </form>
-    <a href="/posts/{{post.id}}"><Button>Cancel</Button></a>
+    <a href="/posts/{{post.id}}"><button>Cancel</button></a>
   </body>
 </html>

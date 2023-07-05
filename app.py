@@ -88,16 +88,24 @@ def delete_user(user_id):
 @app.route("/users/<int:user_id>/posts/new")
 def post_form(user_id):
     users = User.query.get_or_404(user_id)
+    tags = Tag.query.all()
 
-    return render_template("newpost.html", users=users)
+    return render_template("newpost.html", users=users, tags=tags)
 
 
 @app.route("/users/<int:user_id>/posts/new", methods=["POST"])
 def add_new_post(user_id):
     title = request.form["title"]
     content = request.form["content"]
+    tags = request.form.getlist('tags')
 
     post = Post(title=title, content=content, user_id=user_id)
+
+    for tag_name in tags:
+        tag = Tag.query.filter_by(name=tag_name).first()
+        if tag:
+            post.tags.append(tag)
+
     db.session.add(post)
     db.session.commit()
 
@@ -112,7 +120,8 @@ def show_post(post_id):
 @app.route("/posts/<int:post_id>/edit")
 def edit_form(post_id):
     post = Post.query.get_or_404(post_id)
-    return render_template('edit_post.html', post=post)
+    tags = Tag.query.all()
+    return render_template('edit_post.html', post=post, tags=tags)
 
 @app.route("/posts/<int:post_id>/edit", methods=["POST"])
 def edit_post(post_id):
@@ -120,9 +129,16 @@ def edit_post(post_id):
     post = Post.query.get_or_404(post_id)
     title = request.form['title']
     content = request.form['content']
+    tags = request.form.getlist('tags')
 
     post.title = title
     post.content = content
+    post.tags = []
+
+    for tag_name in tags:
+        tag = Tag.query.filter_by(name=tag_name).first()
+        if tag:
+            post.tags.append(tag)
 
     db.session.add(post)
     db.session.commit()
@@ -153,15 +169,26 @@ def show_detail_of_tag(tag_id):
 
 @app.route("/tags/new")
 def new_tag_form():
-    return render_template("newtag.html")
+    posts = Post.query.all()
+    return render_template("newtag.html", posts=posts)
 
 @app.route("/tags/new", methods=["POST"])
 def new_tag():
     tag_name = request.form['name']
+    post_ids = request.form.getlist('posts')
+
 
     new_tag = Tag(name=tag_name)
     db.session.add(new_tag)
     db.session.commit()
+
+
+    for post_id in post_ids:
+        post = Post.query.get(post_id)
+        if post:
+            new_tag.posts.append(post)
+
+    db.session.commit()    
 
     return redirect("/tags")
 
@@ -187,6 +214,8 @@ def delete_tag(tag_id):
     tag = Tag.query.get(tag_id)
     db.session.delete(tag)
     db.session.commit()
+
+    return redirect('/tags')
 
 
 

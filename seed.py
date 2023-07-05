@@ -44,9 +44,13 @@ post5 = Post(title="Golf", content="tyson is better at golf", user_id=5)
 db.session.add_all([post1, post2, post3, post4, post5])
 db.session.commit()
 
-tag1 = Tag(name="fun")
-tag2 = Tag(name="exciting")
-tag3 = Tag(name="sad")
+tag1 = Tag(name="Fun")
+tag2 = Tag(name="Exciting")
+tag3 = Tag(name="Sad")
+
+# tag1.posts.append(post1)
+# tag1.posts.append(post2)
+# tag1.posts.append(post3)
 
 tag1.posts = [post1]
 db.session.add(tag1)
@@ -57,4 +61,3 @@ db.session.commit()
 
 db.session.add(tag3)
 db.session.commit()
-

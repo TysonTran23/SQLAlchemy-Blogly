@@ -6,10 +6,11 @@
     <title>Detail of Tags</title>
 </head>
 <body>
-    <h1>Show Tag</h1>
-    <h2>{{tag.name}}</h2>
+    <h1>{{tag.name}}</h1>
     <ul>
-        <li><a href="">{{tag.posts}}</a></li>
+        {% for post in tag.posts%}
+        <li><a href="">{{post.title}}</a></li>
+        {% endfor %}
     </ul>
 
     <a href="/tags/{{tag.id}}/edit"><button>Edit</button></a>
